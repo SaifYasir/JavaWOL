@@ -13,17 +13,16 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.VBox?>
 
-
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.javafx.WOLFXController">
    <left>
       <VBox prefHeight="272.0" prefWidth="160.0" BorderPane.alignment="CENTER">
          <children>
-            <Label text="IP Addresses">
+            <Label text="WOL selection">
                <padding>
                   <Insets bottom="5.0" />
                </padding>
             </Label>
-            <ListView />
+            <ListView id="WOLSelectionListView" fx:id="WOLSelectionListView" />
          </children>
          <padding>
             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
@@ -35,16 +34,20 @@
          <children>
             <VBox spacing="5.0">
                <children>
-                  <Label text="Add IP Address" />
-                  <TextField />
-                  <Button mnemonicParsing="false" text="Add IP" />
+                  <Label text="Add MAC address" />
+                  <TextField id="macAddressField" fx:id="macAddressField" />
+                  <Label text="MAC addres profile name" />
+                  <TextField id="macAddressProfileNameField" fx:id="macAddressProfileNameField" promptText="Name (optional)" />
+                  <Label text="BroadCast IP" />
+                  <TextField id="broadcastIPField" />
+                  <Button id="addWOLButton" fx:id="addWOLButton" mnemonicParsing="false" onAction="#addWOL" text="Add WOL" />
                </children>
             </VBox>
             <VBox spacing="5.0">
                <children>
-                  <Label text="Delete IP Address" />
-                  <ComboBox prefWidth="150.0" promptText="Ip Address" />
-                  <Button mnemonicParsing="false" text="Delete IP" />
+                  <Label text="Delete Saved Instances" />
+                  <ComboBox id="wolOptionsComboBox" fx:id="wolOptionsComboBox" prefWidth="150.0" promptText="WOL optioins" />
+                  <Button id="deleteWOLButton" fx:id="deleteWOLButton" mnemonicParsing="false" text="Delete WOL" />
                </children>
             </VBox>
          </children>
@@ -57,7 +60,7 @@
       </VBox>
    </right>
    <bottom>
-      <TextArea prefHeight="103.0" prefWidth="600.0" BorderPane.alignment="CENTER" />
+      <TextArea fx:id="terminal" prefHeight="70.0" prefWidth="600.0" BorderPane.alignment="CENTER" />
    </bottom>
    <top>
       <MenuBar BorderPane.alignment="CENTER">
@@ -74,19 +77,11 @@
       <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
          <children>
             <VBox>
-               <children>
-                  <Label text="Broadcast IP">
-                     <padding>
-                        <Insets bottom="5.0" />
-                     </padding>
-                  </Label>
-                  <TextField promptText="Broastcast IP to send to" />
-               </children>
                <padding>
                   <Insets bottom="5.0" />
                </padding>
             </VBox>
-            <Button mnemonicParsing="false" text="Activate all devices" />
+            <Button id="activateAllDevicesButton" fx:id="activateAllDevicesButton" mnemonicParsing="false" text="Activate all devices" />
          </children>
          <padding>
             <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
