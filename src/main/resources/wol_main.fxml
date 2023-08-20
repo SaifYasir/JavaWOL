@@ -22,7 +22,7 @@
                   <Insets bottom="5.0" />
                </padding>
             </Label>
-            <ListView id="WOLSelectionListView" fx:id="WOLSelectionListView" />
+            <ListView id="WOLSelectionListView" fx:id="wolSelectionListView" />
          </children>
          <padding>
             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
@@ -39,7 +39,7 @@
                   <Label text="MAC addres profile name" />
                   <TextField id="macAddressProfileNameField" fx:id="macAddressProfileNameField" promptText="Name (optional)" />
                   <Label text="BroadCast IP" />
-                  <TextField id="broadcastIPField" />
+                  <TextField id="broadcastIPField" fx:id="broadcastIPField" />
                   <Button id="addWOLButton" fx:id="addWOLButton" mnemonicParsing="false" onAction="#addWOL" text="Add WOL" />
                </children>
             </VBox>
