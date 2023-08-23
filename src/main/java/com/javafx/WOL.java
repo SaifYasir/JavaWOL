@@ -1,21 +1,34 @@
 package com.javafx;
 
-import javafx.scene.control.cell.CheckBoxListCell;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 
 public class WOL {
     String broadcastIP;
     String macAddress;
     String macAddressProfileName;
 
-    CheckBoxListCell<String> profileCheckBox;
+    StringProperty name;
+    BooleanProperty on;
 
-    public WOL(String broadcastIP, String macAddress, String macAddressProfileName, CheckBoxListCell<String> profileCheckBox)
+    public WOL(String broadcastIP, String macAddress, String macAddressProfileName)
     {
+        this.name = new SimpleStringProperty();
+        this.on = new SimpleBooleanProperty();
+
         this.broadcastIP = broadcastIP;
         this.macAddress = macAddress;
         this.macAddressProfileName = macAddressProfileName;
-        this.profileCheckBox = profileCheckBox;
+        setName(macAddressProfileName);
+        setOn(false);
+
+        this.onProperty().addListener((obs, wasOn, isOn) -> {
+            System.out.println(this.getName() + " changed on state from " + wasOn + " to " + isOn);
+        });
     }
+    
 
     public String getBroadcastIP() {
         return broadcastIP;
@@ -36,12 +49,32 @@ public class WOL {
         this.macAddressProfileName = macAddressProfileName;
     }
 
-    public CheckBoxListCell<String> getProfileCheckBox() {
-        return profileCheckBox;
+    public BooleanProperty onProperty() {
+        return this.on;
     }
 
-    public void setProfileCheckBox(CheckBoxListCell<String> profileCheckBox) {
-        this.profileCheckBox = profileCheckBox;
+    public boolean isOn() {
+        return this.onProperty().get();
+    }
+
+    public void setOn(boolean on) {
+        onProperty().set(on);
+    }
+
+    public StringProperty nameProperty(){
+        return this.name;
+    }
+
+    public void setName(String name){
+        this.nameProperty().set(name);
+    }
+
+    public String getName(){
+        return this.nameProperty().get();
+    }
+    @Override
+    public String toString(){
+        return getName();
     }
 
 }
