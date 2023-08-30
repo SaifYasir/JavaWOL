@@ -2,7 +2,6 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.Menu?>
@@ -23,6 +22,11 @@
                </padding>
             </Label>
             <ListView id="WOLSelectionListView" fx:id="wolSelectionListView" />
+            <Button fx:id="WakeSelectedDevicesButton" mnemonicParsing="false" onAction="#wakeSelectedDevices" prefHeight="25.0" prefWidth="266.0" text="Wake Activated Devices">
+               <VBox.margin>
+                  <Insets top="5.0" />
+               </VBox.margin>
+            </Button>
          </children>
          <padding>
             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
@@ -46,7 +50,7 @@
             <VBox spacing="5.0">
                <children>
                   <Label text="Delete Saved Instances" />
-                  <ComboBox id="wolOptionsComboBox" fx:id="wolOptionsComboBox" prefWidth="150.0" promptText="WOL optioins" />
+                  <ListView fx:id="wolDeleteOptionsListView" />
                   <Button id="deleteWOLButton" fx:id="deleteWOLButton" mnemonicParsing="false" text="Delete WOL" />
                </children>
             </VBox>
