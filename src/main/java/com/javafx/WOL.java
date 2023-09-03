@@ -58,7 +58,6 @@ public class WOL {
         byte[] repeatedMacAddress = HexFormat.ofDelimiter(":").parseHex(this.macAddress);
         for(int i = 6; i < wolPacket.length; i+=repeatedMacAddress.length)
         {
-            System.out.println(wolPacket.length);
             System.arraycopy(repeatedMacAddress, 0, wolPacket, i,repeatedMacAddress.length);
         }
         DatagramPacket packet = new DatagramPacket(wolPacket,wolPacket.length, address,9);
