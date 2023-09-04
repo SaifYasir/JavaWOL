@@ -79,51 +79,69 @@ public class WOLFXController implements Initializable{
     public void loadFile()
     {
         FileChooser chooseFile = new FileChooser();
-        File chosenFile = chooseFile.showOpenDialog(null);
+
+        //Gets the window from a given node within the scene
+        File fileToLoad = chooseFile.showOpenDialog(macAddressField.getScene().getWindow());
 
         try(FileWriter fileWriter = new FileWriter(LOAD_FILE_PATH,false)){
-            fileWriter.write(chosenFile.getAbsolutePath());
+            fileWriter.write(fileToLoad.getAbsolutePath());
             fileWriter.flush();
-            selectedFileLabel.setText("Selected File: " + chosenFile.getName());
-
-            CSVReader csvReader = new CSVReaderBuilder(new FileReader(chosenFile)).withCSVParser(new CSVParserBuilder().withSeparator(';').build()).build();
-            String[] nextLine;
-            while((nextLine = csvReader.readNext()) != null)
-            {
-                wolProfiles.add(new WOL(nextLine[2], nextLine[0], nextLine[1]));
-            }
-
-        }
-        catch(IOException e)
+        } catch(IOException e)
         {
-            // TODO: handle not loading file exception
-            System.out.println(e);
+            //TODO: Print out correct IO Exception message
         }
-        catch(CsvValidationException e)
-        {
-            System.out.println(e);
-            //TODO: sort out csv validation exception
-        }
+
+        loadCSVFileContents(fileToLoad);
+
+        // try(FileWriter fileWriter = new FileWriter(LOAD_FILE_PATH,false)){
+        //     fileWriter.write(chosenFile.getAbsolutePath());
+        //     fileWriter.flush();
+        //     selectedFileLabel.setText("Selected File: " + chosenFile.getName());
+
+        //     CSVReader csvReader = new CSVReaderBuilder(new FileReader(chosenFile)).withCSVParser(new CSVParserBuilder().withSeparator(';').build()).build();
+        //     String[] nextLine;
+        //     while((nextLine = csvReader.readNext()) != null)
+        //     {
+        //         wolProfiles.add(new WOL(nextLine[2], nextLine[0], nextLine[1]));
+        //     }
+        // }
+        // catch(IOException e)
+        // {
+        //     // TODO: handle not loading file exception
+        //     System.out.println(e);
+        // }
+        // catch(CsvValidationException e)
+        // {
+        //     System.out.println(e);
+        //     //TODO: sort out csv validation exception
+        // }
     }
 
-    public void loadCSVFileContents(File chosenFile)
+    public void loadCSVFileContents(File fileToLoad)
     {
-        try(Scanner scanner = new Scanner(new File(LOAD_FILE_PATH))){
-            String fileLocation = scanner.nextLine();
-            File chosenFile = new File(fileLocation);
-            CSVReader csvReader = new CSVReaderBuilder(new FileReader(chosenFile)).withCSVParser(new CSVParserBuilder().withSeparator(';').build()).build();
-            String[] nextLine;
-            selectedFileLabel.setText("Selected File: " + chosenFile.getName());
-            while((nextLine = csvReader.readNext()) != null)
-            {
-                wolProfiles.add(new WOL(nextLine[2], nextLine[0], nextLine[1]));
-            }
+        CSVReader csvReader;
+
+        try {
+            csvReader = new CSVReaderBuilder(new FileReader(fileToLoad)).withCSVParser(new CSVParserBuilder().withSeparator(';').build()).build();
         } catch (FileNotFoundException e) {
-            // TODO: handle file not found exception
-        } catch (CsvValidationException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
-        } catch (IOException e) {
+            return;
+        }
+
+        String[] nextLine;
+        selectedFileLabel.setText("Selected File: " + fileToLoad.getName());
+
+        try {
+            while((nextLine = csvReader.readNext()) != null)
+            {
+                try {
+                    wolProfiles.add(new WOL(nextLine[2], nextLine[0], nextLine[1]));
+                } catch (IndexOutOfBoundsException e) {
+                    // TODO: handle Index out of bounds exception
+                }
+            }
+        } catch (CsvValidationException | IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
@@ -131,13 +149,6 @@ public class WOLFXController implements Initializable{
     
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
-        try(Scanner scanner = new Scanner(new File(LOAD_FILE_PATH))){
-            String fileLocation = scanner.nextLine();
-        } catch (FileNotFoundException e) {
-            // TODO: handle file not found exception
-        }
-
         wolSelectionListView.setCellFactory(CheckBoxListCell.forListView(new Callback<WOL,ObservableValue<Boolean>>() {
             @Override
             public ObservableValue<Boolean> call(WOL wol) {
@@ -152,5 +163,12 @@ public class WOLFXController implements Initializable{
             }
         }));
         wolDeleteOptionsListView.setItems(wolProfiles);
+
+        try(Scanner scanner = new Scanner(new File(LOAD_FILE_PATH))){
+            String fileLocation = scanner.nextLine();
+            loadCSVFileContents(new File(fileLocation));
+        } catch (FileNotFoundException e) {
+            // TODO: handle file not found exception
+        }
     }
 }
