@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Iterator;
 import java.util.ResourceBundle;
 import java.util.Scanner;
 
@@ -14,7 +15,10 @@ import com.opencsv.CSVReader;
 import com.opencsv.CSVReaderBuilder;
 import com.opencsv.exceptions.CsvValidationException;
 
+import javafx.application.Platform;
+import javafx.beans.InvalidationListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -36,7 +40,7 @@ public class WOLFXController implements Initializable{
     public TextArea terminal;
     public Button addWOLButton;
     public Button deleteWOLButton;
-    public Button activateAllDevicesButton;
+    public Button wakeAllDevicesButton;
     public Button WakeSelectedDevicesButton;
 
     public Label selectedFileLabel;
@@ -76,6 +80,17 @@ public class WOLFXController implements Initializable{
         }
     }
 
+    public void wakeAllDevices()
+    {
+        for (WOL wol : wolProfiles) {
+            try {
+                wol.sendWolPacket();
+            } catch (IOException e) {
+                terminal.appendText(e.getMessage());
+            }
+        }
+    }
+
     public void loadFile()
     {
         FileChooser chooseFile = new FileChooser();
@@ -92,6 +107,24 @@ public class WOLFXController implements Initializable{
         }
 
         loadCSVFileContents(fileToLoad);
+    }
+
+    public void deleteSelectedDevices()
+    {
+        // //TODO: Put warning box for deletion of profiles
+        for(Iterator<WOL> iterator = wolProfiles.iterator(); iterator.hasNext();)
+        {
+            try {
+                WOL nextWOL = iterator.next();
+                if(nextWOL.isDelete())
+                {
+                    iterator.remove();
+                    terminal.appendText("Deleted WOL profile: " + nextWOL.getMacAddressProfileName());
+                }
+            } catch (Exception e) {
+                terminal.appendText("Failure removing WOL profile: " + e.getMessage());
+            }
+        }
     }
 
     public void loadCSVFileContents(File fileToLoad)

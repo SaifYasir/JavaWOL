@@ -52,7 +52,7 @@
                <children>
                   <Label text="Delete Saved Instances" />
                   <ListView fx:id="wolDeleteOptionsListView" />
-                  <Button id="deleteWOLButton" fx:id="deleteWOLButton" mnemonicParsing="false" text="Delete WOL" />
+                  <Button id="deleteWOLButton" fx:id="deleteWOLButton" mnemonicParsing="false" onAction="#deleteSelectedDevices" text="Delete WOL" />
                </children>
             </VBox>
          </children>
@@ -75,7 +75,7 @@
                   <Insets bottom="5.0" />
                </padding>
             </VBox>
-            <Button id="activateAllDevicesButton" fx:id="activateAllDevicesButton" mnemonicParsing="false" text="Activate all devices" />
+            <Button id="activateAllDevicesButton" fx:id="wakeAllDevicesButton" mnemonicParsing="false" onAction="#wakeAllDevices" text="Activate all devices" />
          </children>
          <padding>
             <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />

@@ -34,14 +34,6 @@ public class WOL {
         setName(macAddressProfileName);
         setOn(false);
         setDelete(false);
-
-        this.onProperty().addListener((obs, wasOn, isOn) -> {
-            System.out.println(this.getName() + " changed on state from " + wasOn + " to " + isOn);
-        });
-
-        this.deleteProperty().addListener((obs, wasOn, isOn) -> {
-            System.out.println(this.getName() + " changed on state from " + wasOn + " to " + isOn);
-        });
     }
 
     public void sendWolPacket() throws IOException
