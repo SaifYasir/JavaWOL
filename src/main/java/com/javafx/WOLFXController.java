@@ -15,10 +15,7 @@ import com.opencsv.CSVReader;
 import com.opencsv.CSVReaderBuilder;
 import com.opencsv.exceptions.CsvValidationException;
 
-import javafx.application.Platform;
-import javafx.beans.InvalidationListener;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -98,6 +95,12 @@ public class WOLFXController implements Initializable{
         //Gets the window from a given node within the scene
         File fileToLoad = chooseFile.showOpenDialog(macAddressField.getScene().getWindow());
 
+        if(fileToLoad == null)
+        {
+            terminal.appendText("No file was selected to load!" + "\n");
+            return;
+        }
+
         try(FileWriter fileWriter = new FileWriter(LOAD_FILE_PATH,false)){
             fileWriter.write(fileToLoad.getAbsolutePath());
             fileWriter.flush();
@@ -111,7 +114,20 @@ public class WOLFXController implements Initializable{
 
     public void deleteSelectedDevices()
     {
-        // //TODO: Put warning box for deletion of profiles
+        try{
+            AlertBox warning = new AlertBox();
+            warning.display("Are you sure you want to delete these WOL presets?", "Delete WOL profiles");
+            if(!warning.getReturnBoolean()){
+                terminal.appendText("Cancelled removing WOL profiles!" + "\n");
+                return;
+            }
+        }
+        catch(IOException e)
+        {
+            terminal.appendText("Failure removing WOL profile: " + e.getMessage() + "\n");
+            return;
+        }
+
         for(Iterator<WOL> iterator = wolProfiles.iterator(); iterator.hasNext();)
         {
             try {
@@ -119,16 +135,32 @@ public class WOLFXController implements Initializable{
                 if(nextWOL.isDelete())
                 {
                     iterator.remove();
-                    terminal.appendText("Deleted WOL profile: " + nextWOL.getMacAddressProfileName());
+                    terminal.appendText("Deleted WOL profile: " + nextWOL.getMacAddressProfileName() + "\n");
                 }
             } catch (Exception e) {
-                terminal.appendText("Failure removing WOL profile: " + e.getMessage());
+                terminal.appendText("Failure removing WOL profile: " + e.getMessage() + "\n");
             }
         }
     }
 
     public void loadCSVFileContents(File fileToLoad)
     {
+        // if(wolProfiles.size() > 0)
+        // {
+        //     try{
+        //         AlertBox warning = new AlertBox();
+        //         warning.display("Are you sure you want to Load a new file?", "Hopefully works");
+        //         if(!warning.getReturnBoolean()){
+        //             terminal.appendText("Cancelled removing WOL profiles!" + "\n");
+        //             return;
+        //         }
+        //     }
+        //     catch(IOException e)
+        //     {
+        //     terminal.appendText("Failure removing WOL profile: " + e.getMessage() + "\n");
+        //     } 
+        // }
+
         wolProfiles.clear();
 
         CSVReader csvReader;
