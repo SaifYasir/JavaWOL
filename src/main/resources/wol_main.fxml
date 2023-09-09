@@ -90,6 +90,8 @@
                 <Menu mnemonicParsing="false" text="File">
                   <items>
                     <MenuItem fx:id="loadFileMenuItem" mnemonicParsing="false" onAction="#loadFile" text="Load File" />
+                        <MenuItem fx:id="saveFileMenuItem" mnemonicParsing="false" onAction="#saveFile" text="Save File" />
+                        <MenuItem fx:id="exportFileMenuItem" mnemonicParsing="false" onAction="#exportFile" text="Export File" />
                   </items>
                 </Menu>
               </menus>

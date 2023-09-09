@@ -42,9 +42,12 @@ public class WOLFXController implements Initializable{
 
     public Label selectedFileLabel;
     public MenuItem loadFileMenuItem;
+    public MenuItem saveFileMenuItem;
+    public MenuItem exportFileMenuItem;
 
     ObservableList<WOL> wolProfiles;
     String LOAD_FILE_PATH = this.getClass().getResource("/").getPath()+"/loadFileLocation.txt";
+    String CURRENT_LOADED_FILE;
 
     public void addWOL()
     {
@@ -52,7 +55,6 @@ public class WOLFXController implements Initializable{
         String macAddressProfileName = macAddressProfileNameField.getText();
         String broadcastIP = broadcastIPField.getText();
         
-        //TODO: Complete add WOL checks here
         terminal.appendText("Adding WOL! \n");
 
         wolProfiles.add(new WOL(broadcastIP, macAddress, macAddressProfileName));
@@ -86,6 +88,39 @@ public class WOLFXController implements Initializable{
                 terminal.appendText(e.getMessage());
             }
         }
+    }
+
+    public void saveFile()
+    {
+        AlertBox warning = new AlertBox();
+        try{
+            warning.display("Are you sure you want to save this file to the current file loaded (overwrites any previous data)?", "save file");
+        }
+        catch(IOException e){
+            terminal.appendText("Error saving file: " + e.getMessage() + "\n");
+            return;
+        }
+
+        if(!warning.getReturnBoolean()){
+            terminal.appendText("Cancelled saving file! \n");
+            return;
+        }
+
+        try (FileWriter writer = new FileWriter(new File(CURRENT_LOADED_FILE),false)) {
+            for (WOL wol : wolProfiles) {
+                writer.write(wol.getMacAddress() + ";" + wol.getMacAddressProfileName() + ";" + wol.getBroadcastIP());
+                writer.write(System.lineSeparator());
+            }
+            writer.flush();
+            terminal.appendText("File saved! \n");
+        } catch (Exception e) {
+            terminal.appendText("Error saving file " + e.getMessage() + "\n");
+        }
+    }
+
+    public void exportFile()
+    {
+        //TODO: Actually export the files
     }
 
     public void loadFile()
@@ -145,21 +180,21 @@ public class WOLFXController implements Initializable{
 
     public void loadCSVFileContents(File fileToLoad)
     {
-        // if(wolProfiles.size() > 0)
-        // {
-        //     try{
-        //         AlertBox warning = new AlertBox();
-        //         warning.display("Are you sure you want to Load a new file?", "Hopefully works");
-        //         if(!warning.getReturnBoolean()){
-        //             terminal.appendText("Cancelled removing WOL profiles!" + "\n");
-        //             return;
-        //         }
-        //     }
-        //     catch(IOException e)
-        //     {
-        //     terminal.appendText("Failure removing WOL profile: " + e.getMessage() + "\n");
-        //     } 
-        // }
+        if(wolProfiles.size() > 0)
+        {
+            try{
+                AlertBox warning = new AlertBox();
+                warning.display("Are you sure you want to Load a new file?", "load new file");
+                if(!warning.getReturnBoolean()){
+                    terminal.appendText("Cancelled loading WOL profiles!" + "\n");
+                    return;
+                }
+            }
+            catch(IOException e)
+            {
+                terminal.appendText("Failure loading WOL profile: " + e.getMessage() + "\n");
+            } 
+        }
 
         wolProfiles.clear();
 
@@ -173,6 +208,8 @@ public class WOLFXController implements Initializable{
         }
 
         selectedFileLabel.setText("Selected File: " + fileToLoad.getName());
+        CURRENT_LOADED_FILE = fileToLoad.getAbsolutePath();
+
         String[] nextLine;
 
         try {
@@ -190,8 +227,7 @@ public class WOLFXController implements Initializable{
             }
             terminal.appendText("Loaded File " + fileToLoad.getName() + "\n");
         } catch (CsvValidationException | IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            terminal.appendText("error occurred: " + e.getMessage());
         }
     }
     
