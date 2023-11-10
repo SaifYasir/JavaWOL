@@ -46,7 +46,7 @@ public class WOLFXController implements Initializable{
     public MenuItem exportFileMenuItem;
 
     ObservableList<WOL> wolProfiles;
-    String LOAD_FILE_PATH = this.getClass().getResource("/wol_profiles.txt").getPath();
+    String LOAD_FILE_PATH;
     String CURRENT_LOADED_FILE;
 
     public void addWOL()
@@ -233,6 +233,11 @@ public class WOLFXController implements Initializable{
     
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
+        if(this.getClass().getResource("/loadFileLocation.txt") != null){
+          LOAD_FILE_PATH = this.getClass().getResource("/loadFileLocation.txt").getPath();  
+        }
+
         wolSelectionListView.setCellFactory(CheckBoxListCell.forListView(new Callback<WOL,ObservableValue<Boolean>>() {
             @Override
             public ObservableValue<Boolean> call(WOL wol) {
@@ -252,8 +257,8 @@ public class WOLFXController implements Initializable{
             String fileLocation = scanner.nextLine();
             File fileToLoad = new File(fileLocation);
             loadCSVFileContents(fileToLoad);
-        } catch (FileNotFoundException e) {
-            terminal.appendText("Could not load previous file on startup: " + e.getMessage() + "\n");
+        } catch (FileNotFoundException | NullPointerException e) {
+            terminal.appendText("No loaded file on startup!");
         }
     }
 }
