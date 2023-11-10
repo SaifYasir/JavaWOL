@@ -46,7 +46,7 @@ public class WOLFXController implements Initializable{
     public MenuItem exportFileMenuItem;
 
     ObservableList<WOL> wolProfiles;
-    String LOAD_FILE_PATH = this.getClass().getResource("/wol_profiles.txt").getPath(); //.getPath()+"/loadFileLocation.txt";
+    String LOAD_FILE_PATH = this.getClass().getResource("/wol_profiles.txt").getPath();
     String CURRENT_LOADED_FILE;
 
     public void addWOL()
